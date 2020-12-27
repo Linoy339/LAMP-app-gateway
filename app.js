@@ -80,7 +80,13 @@ async function APNSpush(certificate, device, payload) {
 				reject()
 		})
 		request.on('data', (chunk) => data.push(chunk))
+		request.on('error',reject())
+		try {
 		request.on('end', () => resolve(data.join()))
+		}catch (error) {
+		reject(error)
+		}	
+			
 		request.write(buffer)
 		request.end()
 	})
@@ -106,6 +112,7 @@ async function GCMpush(certificate, device, payload) {
 			if (headers[':status'] !== 200)
 				reject()
 		})
+		request.on('error',reject())
 		request.on('data', (chunk) => data.push(chunk))
 		request.on('end', () => {
 			try {
